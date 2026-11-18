@@ -1,0 +1,9 @@
+node_modules/
+Backend/node_modules/
+Frontend/node_modules/
+.env
+Backend/.env
+Frontend/.env
+Backend/data/auction.db
+.DS_Store
+*.log

@@ -1,0 +1,15 @@
+{
+  "name": "coderscup-grand-auction",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FAST NUCES Karachi Coders Cup Live Auction Platform",
+  "scripts": {
+    "build": "npm --prefix Backend install && npm --prefix Frontend install && npm --prefix Frontend run build",
+    "start": "node Backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}

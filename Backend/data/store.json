@@ -1,0 +1,678 @@
+{
+  "settings": {
+    "housePointLimit": 150000,
+    "basePrice": 5000,
+    "bidIncrement": 1000,
+    "totalSlotsPerHouse": 11
+  },
+  "houses": [
+    {
+      "id": "gryffindor",
+      "name": "Gryffindor",
+      "captainTeamName": "23k Top Seed #1",
+      "accessPin": "1111",
+      "color": "#d83d2f",
+      "accent": "#f7d16b",
+      "crest": "G",
+      "pointLimit": 150000,
+      "totalSpent": 0,
+      "acquiredTeams": [],
+      "powerCards": {
+        "freeze": {
+          "used": false,
+          "usedOnHouseId": null,
+          "usedOnTeamId": null,
+          "usedAt": null
+        },
+        "rtm": {
+          "used": false,
+          "usedOnTeamId": null,
+          "amount": 0,
+          "usedAt": null
+        }
+      }
+    },
+    {
+      "id": "slytherin",
+      "name": "Slytherin",
+      "captainTeamName": "23k Top Seed #2",
+      "accessPin": "2222",
+      "color": "#2d9a5d",
+      "accent": "#b6d7a8",
+      "crest": "S",
+      "pointLimit": 150000,
+      "totalSpent": 0,
+      "acquiredTeams": [],
+      "powerCards": {
+        "freeze": {
+          "used": false,
+          "usedOnHouseId": null,
+          "usedOnTeamId": null,
+          "usedAt": null
+        },
+        "rtm": {
+          "used": false,
+          "usedOnTeamId": null,
+          "amount": 0,
+          "usedAt": null
+        }
+      }
+    },
+    {
+      "id": "ravenclaw",
+      "name": "Ravenclaw",
+      "captainTeamName": "23k Top Seed #3",
+      "accessPin": "3333",
+      "color": "#3f6dbd",
+      "accent": "#d4dff7",
+      "crest": "R",
+      "pointLimit": 150000,
+      "totalSpent": 0,
+      "acquiredTeams": [],
+      "powerCards": {
+        "freeze": {
+          "used": false,
+          "usedOnHouseId": null,
+          "usedOnTeamId": null,
+          "usedAt": null
+        },
+        "rtm": {
+          "used": false,
+          "usedOnTeamId": null,
+          "amount": 0,
+          "usedAt": null
+        }
+      }
+    },
+    {
+      "id": "hufflepuff",
+      "name": "Hufflepuff",
+      "captainTeamName": "23k Top Seed #4",
+      "accessPin": "4444",
+      "color": "#d7a236",
+      "accent": "#f4ebc0",
+      "crest": "H",
+      "pointLimit": 150000,
+      "totalSpent": 0,
+      "acquiredTeams": [],
+      "powerCards": {
+        "freeze": {
+          "used": false,
+          "usedOnHouseId": null,
+          "usedOnTeamId": null,
+          "usedAt": null
+        },
+        "rtm": {
+          "used": false,
+          "usedOnTeamId": null,
+          "amount": 0,
+          "usedAt": null
+        }
+      }
+    }
+  ],
+  "batches": [
+    {
+      "id": "batch-26k",
+      "code": "26k",
+      "name": "26k Batch",
+      "quota": 4,
+      "totalTeams": 16,
+      "blindBidRule": "first_team",
+      "blindBidThreshold": 15000,
+      "firstTeamName": "One piece",
+      "order": 1
+    },
+    {
+      "id": "batch-25k",
+      "code": "25k",
+      "name": "25k Batch",
+      "quota": 3,
+      "totalTeams": 12,
+      "blindBidRule": "first_team",
+      "blindBidThreshold": 15000,
+      "firstTeamName": "Cook If you can",
+      "order": 2
+    },
+    {
+      "id": "batch-24k",
+      "code": "24k",
+      "name": "24k Batch",
+      "quota": 3,
+      "totalTeams": 12,
+      "blindBidRule": "first_team",
+      "blindBidThreshold": 15000,
+      "firstTeamName": "Three Muggles",
+      "order": 3
+    },
+    {
+      "id": "batch-23k",
+      "code": "23k",
+      "name": "23k Batch",
+      "quota": 1,
+      "totalTeams": 4,
+      "blindBidRule": "all_teams",
+      "blindBidThreshold": 10000,
+      "firstTeamName": null,
+      "order": 4
+    }
+  ],
+  "teams": [
+    {
+      "id": "team-26k-01",
+      "name": "One piece",
+      "batchId": "batch-26k",
+      "isFirstTeam": true,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-02",
+      "name": "26k Team 02",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-03",
+      "name": "26k Team 03",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-04",
+      "name": "26k Team 04",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-05",
+      "name": "26k Team 05",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-06",
+      "name": "26k Team 06",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-07",
+      "name": "26k Team 07",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-08",
+      "name": "26k Team 08",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-09",
+      "name": "26k Team 09",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-10",
+      "name": "26k Team 10",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-11",
+      "name": "26k Team 11",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-12",
+      "name": "26k Team 12",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-13",
+      "name": "26k Team 13",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-14",
+      "name": "26k Team 14",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-15",
+      "name": "26k Team 15",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-26k-16",
+      "name": "26k Team 16",
+      "batchId": "batch-26k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-01",
+      "name": "Cook If you can",
+      "batchId": "batch-25k",
+      "isFirstTeam": true,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-02",
+      "name": "25k Team 02",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-03",
+      "name": "25k Team 03",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-04",
+      "name": "25k Team 04",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-05",
+      "name": "25k Team 05",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-06",
+      "name": "25k Team 06",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-07",
+      "name": "25k Team 07",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-08",
+      "name": "25k Team 08",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-09",
+      "name": "25k Team 09",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-10",
+      "name": "25k Team 10",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-11",
+      "name": "25k Team 11",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-25k-12",
+      "name": "25k Team 12",
+      "batchId": "batch-25k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-01",
+      "name": "Three Muggles",
+      "batchId": "batch-24k",
+      "isFirstTeam": true,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-02",
+      "name": "24k Team 02",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-03",
+      "name": "24k Team 03",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-04",
+      "name": "24k Team 04",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-05",
+      "name": "24k Team 05",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-06",
+      "name": "24k Team 06",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-07",
+      "name": "24k Team 07",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-08",
+      "name": "24k Team 08",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-09",
+      "name": "24k Team 09",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-10",
+      "name": "24k Team 10",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-11",
+      "name": "24k Team 11",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-24k-12",
+      "name": "24k Team 12",
+      "batchId": "batch-24k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-23k-01",
+      "name": "23k Finalist 01",
+      "batchId": "batch-23k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-23k-02",
+      "name": "23k Finalist 02",
+      "batchId": "batch-23k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-23k-03",
+      "name": "23k Finalist 03",
+      "batchId": "batch-23k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    },
+    {
+      "id": "team-23k-04",
+      "name": "23k Finalist 04",
+      "batchId": "batch-23k",
+      "isFirstTeam": false,
+      "isCaptain": false,
+      "status": "unsold",
+      "assignedHouseId": null,
+      "assignedTransactionId": null,
+      "createdAt": "2026-11-18T19:54:39.658Z"
+    }
+  ],
+  "transactions": [],
+  "history": [
+    {
+      "id": "history-1795031684693-r1ohv2",
+      "type": "system",
+      "message": "Coders Cup Live Auction system initialized (150k purse, 44 teams across 26k/25k/24k/23k).",
+      "createdAt": "2026-11-18T19:54:44.693Z",
+      "meta": {}
+    },
+    {
+      "id": "history-1795031684693-mflnnb",
+      "type": "system",
+      "message": "Auction reset. Teams retained, assignments & power cards cleared.",
+      "createdAt": "2026-11-18T19:54:44.693Z",
+      "meta": {}
+    }
+  ],
+  "auction": {
+    "currentTeamId": null,
+    "currentBid": 0,
+    "selectedHouseId": null,
+    "status": "idle",
+    "startedAt": null,
+    "isBlindBidRound": false,
+    "blindBidThreshold": null,
+    "blindBidRuleLabel": null,
+    "isBlindBidActive": false,
+    "blindBids": {},
+    "frozenHouseId": null,
+    "frozenByHouseId": null,
+    "bidHistory": []
+  }
+}
