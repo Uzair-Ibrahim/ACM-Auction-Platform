@@ -272,6 +272,9 @@ router.post('/admin/login', async (req, res) => {
       verifyPassword(password, state.settings.adminPasswordHash);
     const envValid = password === configuredKey;
     authenticated = Boolean(hashValid || envValid);
+    if (authenticated && sb.enabled) {
+      syncUserToSupabaseAuth(username, password, { role: 'admin' }).catch(() => {});
+    }
   }
 
   if (!authenticated) {
@@ -338,6 +341,13 @@ router.post('/captain/login', async (req, res) => {
   // 2. Verify against server-side salted scrypt passwordHash
   if (!authenticated) {
     authenticated = verifyPassword(password, house.passwordHash);
+    if (authenticated && sb.enabled) {
+      syncUserToSupabaseAuth(house.username || house.id, password, {
+        role: 'captain',
+        houseId: house.id,
+        houseName: house.name,
+      }).catch(() => {});
+    }
   }
 
   if (!authenticated) {

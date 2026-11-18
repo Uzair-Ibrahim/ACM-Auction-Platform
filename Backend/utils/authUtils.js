@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { verifyWithSupabase, syncUserToSupabaseAuth } = require('./supabaseClient');
 
 // Server-only signing secret (never exposed to frontend)
 const JWT_SECRET =
@@ -108,47 +109,19 @@ function verifyJwt(token) {
 }
 
 /**
- * Optional Supabase Auth REST verification when SUPABASE_URL & SUPABASE_ANON_KEY are configured.
+ * Authenticates user against Supabase Auth (and auto-provisions in Supabase Auth when verified).
  */
-async function authenticateWithSupabase(emailOrUsername, password, supabaseConfig = {}) {
-  const supabaseUrl = (supabaseConfig.url || process.env.SUPABASE_URL || '').replace(/\/$/, '');
-  const supabaseKey = supabaseConfig.anonKey || process.env.SUPABASE_ANON_KEY || '';
-  if (!supabaseUrl || !supabaseKey) {
-    return { enabled: false };
-  }
-
-  const email = emailOrUsername.includes('@')
-    ? emailOrUsername
-    : `${emailOrUsername.toLowerCase()}@coderscup.nu.edu.pk`;
-
-  try {
-    const res = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: supabaseKey,
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      return {
-        enabled: true,
-        success: false,
-        error: errData.error_description || errData.msg || 'Invalid Supabase credentials.',
-      };
-    }
-    const data = await res.json();
+async function authenticateWithSupabase(emailOrUsername, password) {
+  const res = await verifyWithSupabase(emailOrUsername, password);
+  if (res.configured && res.authenticated) {
     return {
       enabled: true,
       success: true,
-      supabaseUser: data.user,
-      supabaseAccessToken: data.access_token,
+      supabaseUser: res.user,
+      supabaseAccessToken: res.accessToken,
     };
-  } catch (err) {
-    // If offline on campus LAN without internet, gracefully fallback to local cryptographic hash verification
-    return { enabled: false, offlineFallback: true };
   }
+  return { enabled: res.configured, success: false };
 }
 
 module.exports = {
@@ -157,4 +130,5 @@ module.exports = {
   signJwt,
   verifyJwt,
   authenticateWithSupabase,
+  syncUserToSupabaseAuth,
 };
