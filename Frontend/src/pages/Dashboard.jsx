@@ -118,7 +118,7 @@ export default function Dashboard() {
           <p className="eyebrow">FAST NUCES Karachi · Coders Cup Draft</p>
           <h1>Live Projector Dashboard</h1>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
           <div
             style={{
               padding: '0.32rem 0.85rem',

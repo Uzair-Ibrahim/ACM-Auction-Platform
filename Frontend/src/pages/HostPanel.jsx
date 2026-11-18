@@ -697,7 +697,13 @@ export default function HostPanel() {
                     </label>
 
                     {/* Quick +1k / +2k / +5k Paddle Buttons */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem' }}>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(85px, 1fr))',
+                        gap: '0.4rem',
+                      }}
+                    >
                       {[
                         { label: 'Base 5k', val: basePrice },
                         { label: '+1,000', val: (auction.currentBid || basePrice - 1000) + 1000 },
@@ -848,7 +854,7 @@ export default function HostPanel() {
                 </div>
               )}
 
-              {/* ── Power Arsenal (Quick Draw: Freeze & RTM) ── */}
+              {/* ── Power Arsenal (Quick Draw: Freeze Card Only) ── */}
               <div
                 style={{
                   borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -860,7 +866,7 @@ export default function HostPanel() {
               >
                 {/* Freeze Card Control */}
                 <div>
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#93c5fd', marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#93c5fd', marginBottom: '0.4rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.35rem' }}>
                     <span>❄ FREEZE CARD (Quick Draw)</span>
                     {auction.isBlindBidRound && (
                       <span style={{ color: '#fca5a5', fontSize: '0.65rem' }}>
@@ -869,7 +875,7 @@ export default function HostPanel() {
                     )}
                   </div>
                   <form onSubmit={handleInvokeFreeze} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.4rem' }}>
                       <select
                         value={freezeSourceId}
                         onChange={(e) => setFreezeSourceId(e.target.value)}
@@ -1437,7 +1443,6 @@ export default function HostPanel() {
                         <span style={{ color: assignedHouse.color, marginLeft: '0.5rem' }}>
                           → {assignedHouse.name}
                           {tx ? ` · ${Number(tx.amount).toLocaleString()} pts` : ''}
-                          {tx?.viaRTM ? ' [RTM]' : ''}
                           {tx?.viaBlindBid ? ' [BLIND]' : ''}
                         </span>
                       )}
@@ -1514,7 +1519,6 @@ export default function HostPanel() {
                     <div>
                       <strong>
                         {team?.name || '—'}
-                        {tx.viaRTM ? ' [RTM]' : ''}
                         {tx.viaBlindBid ? ' [BLIND]' : ''}
                       </strong>
                       <span style={{ color: house?.color }}>

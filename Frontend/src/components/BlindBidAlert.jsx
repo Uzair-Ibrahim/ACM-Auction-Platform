@@ -38,12 +38,13 @@ export default function BlindBidAlert({ alert, onClose }) {
         style={{
           border: '3px solid #e74c3c',
           borderRadius: 18,
-          padding: '44px 60px',
+          padding: 'clamp(22px, 4vw, 44px) clamp(20px, 5vw, 60px)',
           textAlign: 'center',
           background: 'linear-gradient(180deg, #160404 0%, #090202 100%)',
           animation: 'bbPulse 1.3s infinite',
           maxWidth: 680,
-          margin: '0 20px',
+          width: 'calc(100% - 32px)',
+          margin: '0 16px',
         }}
       >
         <div style={{ fontSize: 54, marginBottom: 14 }}>🔇</div>

@@ -471,7 +471,13 @@ export default function CaptainPortal() {
               {/* Open Bidding Controls vs Blind Bid Entry */}
               {!auction.isBlindBidActive ? (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.45rem' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))',
+                      gap: '0.45rem',
+                    }}
+                  >
                     {[
                       {
                         label:
@@ -517,7 +523,7 @@ export default function CaptainPortal() {
                       e.preventDefault();
                       handleBid(customBid);
                     }}
-                    style={{ display: 'flex', gap: '0.5rem' }}
+                    style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}
                   >
                     <input
                       type="number"
@@ -527,12 +533,13 @@ export default function CaptainPortal() {
                       onChange={(e) => setCustomBid(e.target.value)}
                       disabled={!canPlaceStandardBid}
                       placeholder={`Custom bid (min ${minNextBid.toLocaleString()})`}
+                      style={{ flex: '1 1 160px' }}
                     />
                     <button
                       type="submit"
                       className="primary-button"
                       disabled={!canPlaceStandardBid || loading}
-                      style={{ whiteSpace: 'nowrap', fontWeight: 700 }}
+                      style={{ whiteSpace: 'nowrap', fontWeight: 700, flex: '1 1 auto' }}
                     >
                       Place Paddle Bid
                     </button>
@@ -570,7 +577,7 @@ export default function CaptainPortal() {
                       ✓ Sealed Bid Locked: {Number(mySubmittedBlindBid).toLocaleString()} pts
                     </div>
                   ) : null}
-                  <form onSubmit={handleBlindBidSubmit} style={{ display: 'flex', gap: '0.5rem' }}>
+                  <form onSubmit={handleBlindBidSubmit} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <input
                       type="number"
                       min={Number(auction.blindBidThreshold || 15000) + bidIncrement}
@@ -579,12 +586,13 @@ export default function CaptainPortal() {
                       onChange={(e) => setBlindBidAmount(e.target.value)}
                       disabled={isBatchQuotaFull || isOverallQuotaFull}
                       placeholder={`Min ${(Number(auction.blindBidThreshold || 15000) + bidIncrement).toLocaleString()} pts`}
+                      style={{ flex: '1 1 160px' }}
                     />
                     <button
                       type="submit"
                       className="primary-button"
                       disabled={isBatchQuotaFull || isOverallQuotaFull || loading}
-                      style={{ whiteSpace: 'nowrap' }}
+                      style={{ whiteSpace: 'nowrap', flex: '1 1 auto' }}
                     >
                       {mySubmittedBlindBid ? 'Update Sealed Bid' : 'Lock Sealed Bid'}
                     </button>
@@ -607,10 +615,11 @@ export default function CaptainPortal() {
                 </div>
 
                 {/* Freeze Card */}
-                <form onSubmit={handleSlapFreeze} style={{ display: 'flex', gap: '0.5rem' }}>
+                <form onSubmit={handleSlapFreeze} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <select
                     value={freezeTargetId}
                     onChange={(e) => setFreezeTargetId(e.target.value)}
+                    style={{ flex: '1 1 180px' }}
                     disabled={
                       Boolean(myHouse.powerCards?.freeze?.used) ||
                       isFrozen ||
@@ -743,7 +752,7 @@ export default function CaptainPortal() {
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))',
                     gap: '0.45rem',
                     marginTop: '0.2rem',
                   }}

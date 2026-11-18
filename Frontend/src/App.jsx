@@ -73,7 +73,7 @@ function AppShell() {
             </span>
           </div>
         ) : (
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
             <NavLink to="/dashboard" style={linkStyle}>
               Projector Board
             </NavLink>
