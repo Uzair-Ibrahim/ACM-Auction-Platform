@@ -322,8 +322,8 @@ export default function Dashboard() {
                 overflow: 'hidden',
               }}
             >
-              {/* House Flag Background Layer (Low opacity so foreground text pops) */}
-              <HouseFlagBackground house={house} opacity={0.08} variant="card" />
+              {/* Extracted House Crest Logo Background Layer */}
+              <HouseFlagBackground house={house} opacity={0.22} variant="card" />
 
               {house.frozen && <FreezeOverlay frozenByHouseName={house.frozenByHouseName} />}
 

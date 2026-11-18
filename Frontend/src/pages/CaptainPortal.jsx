@@ -680,7 +680,7 @@ export default function CaptainPortal() {
 
         {/* ── 2. Live Reserve Law Formula & Next-Team Max Bid Calculator ── */}
         <section className="admin-card" style={{ position: 'relative', overflow: 'hidden' }}>
-          <HouseFlagBackground house={myHouse} opacity={0.07} variant="portal" />
+          <HouseFlagBackground house={myHouse} opacity={0.18} variant="portal" />
           <div style={{ position: 'relative', zIndex: 2, textShadow: '0 2px 6px rgba(0,0,0,0.95)' }}>
             <h2>Reserve Law &amp; Next-Team Limit Calculator</h2>
 
