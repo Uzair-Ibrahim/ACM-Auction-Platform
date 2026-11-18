@@ -27,22 +27,23 @@ export default function HouseFlagBackground({ house, opacity = 0.22, variant = '
         overflow: 'hidden',
         borderRadius: 'inherit',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: isPortal ? 'center' : 'flex-end',
         justifyContent: isPortal ? 'flex-end' : 'center',
         paddingRight: isPortal ? '1.5rem' : 0,
+        paddingBottom: isPortal ? 0 : '0.85rem',
       }}
     >
       <img
         src={logoSrc}
         alt=""
         style={{
-          width: isPortal ? '260px' : '84%',
-          maxWidth: isPortal ? '280px' : '265px',
+          width: isPortal ? '260px' : '88%',
+          maxWidth: isPortal ? '280px' : '295px',
           height: 'auto',
           objectFit: 'contain',
           opacity: isPortal ? 0.16 : opacity,
           filter: 'drop-shadow(0 8px 22px rgba(0, 0, 0, 0.85)) saturate(1.1)',
-          transform: isPortal ? 'none' : 'translateY(4%)',
+          transform: 'none',
           userSelect: 'none',
         }}
       />
