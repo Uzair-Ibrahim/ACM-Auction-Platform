@@ -214,12 +214,12 @@ input, select {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
+  border-radius: 8px;
   color: var(--text);
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .dot {

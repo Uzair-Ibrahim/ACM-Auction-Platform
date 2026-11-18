@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import api, { extractErrorMessage } from '../services/api';
 import { useAuction } from '../context/AuctionContext';
 import Modal from '../components/Modal';
 import BlindBidAlert from '../components/BlindBidAlert';
+import AcquisitionAnimation from '../components/AcquisitionAnimation';
 import PowerCardIcon from '../components/PowerCardIcon';
 import HouseFlagBackground from '../components/HouseFlagBackground';
 
@@ -16,8 +17,12 @@ export default function CaptainPortal() {
     transactions,
     auction,
     connected,
+    acquisition,
     blindBidAlert,
   } = state;
+
+  const stageCardRef = useRef(null);
+  const houseCardRef = useRef(null);
 
   const pointLimit = settings?.housePointLimit || 150000;
   const basePrice = settings?.basePrice || 5000;
@@ -365,7 +370,7 @@ export default function CaptainPortal() {
 
       <div className="admin-grid">
         {/* ── 1. Live Center Stage Bidding Console ── */}
-        <section className="admin-card auction-card">
+        <section ref={stageCardRef} className="admin-card auction-card">
           <h2>Live Bidding Stage</h2>
 
           {currentTeam ? (
@@ -688,7 +693,7 @@ export default function CaptainPortal() {
         </section>
 
         {/* ── 2. Live Reserve Law Formula & Next-Team Max Bid Calculator ── */}
-        <section className="admin-card" style={{ position: 'relative', overflow: 'hidden' }}>
+        <section ref={houseCardRef} className="admin-card" style={{ position: 'relative', overflow: 'hidden' }}>
           <HouseFlagBackground house={myHouse} opacity={0.18} variant="portal" />
           <div style={{ position: 'relative', zIndex: 2, textShadow: '0 2px 6px rgba(0,0,0,0.95)' }}>
             <h2>Reserve Law &amp; Next-Team Limit Calculator</h2>
@@ -886,6 +891,41 @@ export default function CaptainPortal() {
           </div>
         </section>
       </div>
+
+      {acquisition && (
+        <AcquisitionAnimation
+          teamName={acquisition.teamName}
+          houseName={acquisition.houseName}
+          houseColor={
+            houses.find((h) => h.id === acquisition.houseId)?.color || '#f4d66d'
+          }
+          amount={acquisition.amount}
+          startX={
+            stageCardRef.current
+              ? stageCardRef.current.getBoundingClientRect().left +
+                stageCardRef.current.getBoundingClientRect().width / 2
+              : window.innerWidth * 0.28
+          }
+          startY={
+            stageCardRef.current
+              ? stageCardRef.current.getBoundingClientRect().top + 140
+              : window.innerHeight * 0.35
+          }
+          targetX={
+            houseCardRef.current
+              ? houseCardRef.current.getBoundingClientRect().left +
+                houseCardRef.current.getBoundingClientRect().width / 2
+              : window.innerWidth * 0.72
+          }
+          targetY={
+            houseCardRef.current
+              ? houseCardRef.current.getBoundingClientRect().top +
+                houseCardRef.current.getBoundingClientRect().height / 2
+              : window.innerHeight * 0.5
+          }
+          onDone={() => dispatch({ type: 'CLEAR_ACQUISITION' })}
+        />
+      )}
     </div>
   );
 }
