@@ -45,22 +45,6 @@ if (process.env.VERCEL) {
   app.use('/', auctionRouter);
 }
 
-// Serve built frontend locally if available (enables single-port LAN hosting)
-const distDir = path.join(__dirname, '..', 'Frontend', 'dist');
-if (!process.env.VERCEL && fs.existsSync(distDir)) {
-  app.use(express.static(distDir));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
-      return next();
-    }
-    const indexFile = path.join(distDir, 'index.html');
-    if (fs.existsSync(indexFile)) {
-      return res.sendFile(indexFile);
-    }
-    return next();
-  });
-}
-
 io.on('connection', (socket) => {
   console.log(`[Socket] Client connected: ${socket.id}`);
 
