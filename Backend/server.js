@@ -35,15 +35,19 @@ app.use(
 );
 app.use(express.json({ limit: '4mb' }));
 
-app.use('/api', auctionRouter);
-
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-// Serve built frontend if available (enables single-port LAN hosting)
+app.use('/api', auctionRouter);
+// Also mount at root so Vercel service rewrites work whether /api prefix is preserved or stripped
+if (process.env.VERCEL) {
+  app.use('/', auctionRouter);
+}
+
+// Serve built frontend locally if available (enables single-port LAN hosting)
 const distDir = path.join(__dirname, '..', 'Frontend', 'dist');
-if (fs.existsSync(distDir)) {
+if (!process.env.VERCEL && fs.existsSync(distDir)) {
   app.use(express.static(distDir));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {

@@ -1,17 +1,7 @@
 import axios from 'axios';
 
-const isLocalVitePort =
-  typeof window !== 'undefined' &&
-  (window.location.port === '3000' ||
-    window.location.port === '5173' ||
-    window.location.port === '4173');
-
 const DEFAULT_BACKEND =
-  typeof window !== 'undefined'
-    ? isLocalVitePort
-      ? `${window.location.protocol}//${window.location.hostname}:5000`
-      : window.location.origin
-    : 'http://localhost:5000';
+  typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5000';
 
 const API_BASE = (import.meta.env.VITE_API_URL || DEFAULT_BACKEND).replace(/\/$/, '');
 
