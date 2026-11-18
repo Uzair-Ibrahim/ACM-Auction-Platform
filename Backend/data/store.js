@@ -482,9 +482,19 @@ function saveState(nextState) {
   return clone(value);
 }
 
-async function hydrateFromSupabaseIfAvailable() {
+let isHydratedFromCloud = false;
+let lastCloudHydrateAt = 0;
+
+async function hydrateFromSupabaseIfAvailable(force = false) {
+  if (process.env.NODE_ENV === 'test') return false;
+  const now = Date.now();
+  if (!force && isHydratedFromCloud && now - lastCloudHydrateAt < 1500) {
+    return true;
+  }
   try {
     const cloudState = await loadAuctionStateFromSupabase();
+    isHydratedFromCloud = true;
+    lastCloudHydrateAt = Date.now();
     if (cloudState && typeof cloudState === 'object') {
       state = normalizeState(cloudState);
       try {

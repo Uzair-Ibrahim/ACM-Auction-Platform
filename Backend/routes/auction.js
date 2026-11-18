@@ -7,6 +7,7 @@ const {
   buildPublicSnapshot,
   buildDefaultAuctionState,
   buildDefaultPowerCards,
+  hydrateFromSupabaseIfAvailable,
   addHistory,
   generateId,
   resetStore,
@@ -30,6 +31,14 @@ const { syncUserToSupabaseAuth } = require('../utils/supabaseClient');
 
 // In-memory captain session tokens: token -> { houseId, createdAt }
 const captainSessions = new Map();
+
+// Hydrate from Supabase on Vercel serverless cold-starts or initial boot
+router.use(async (req, res, next) => {
+  if (process.env.VERCEL) {
+    await hydrateFromSupabaseIfAvailable(req.method !== 'GET');
+  }
+  next();
+});
 
 function getPointLimit(state) {
   return Number(state.settings?.housePointLimit || HOUSE_POINT_LIMIT);
