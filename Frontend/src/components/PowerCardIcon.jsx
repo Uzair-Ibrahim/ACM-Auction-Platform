@@ -1,26 +1,18 @@
 import React from 'react';
 
 /**
- * Displays a single power card icon ('freeze' or 'rtm').
+ * Displays the Freeze Card icon ('freeze').
  * Greys out when `used` is true.
  */
-export default function PowerCardIcon({ type, used, size = 'sm', showLabel = true }) {
-  const cards = {
-    freeze: {
-      icon: '❄',
-      label: 'Freeze',
-      color: '#60a5fa',
-      desc: 'Silences a rival House until another House bids',
-    },
-    rtm: {
-      icon: '⚡',
-      label: 'RTM',
-      color: '#f4d66d',
-      desc: 'Right to Match — Absolute steal at final floor price',
-    },
+export default function PowerCardIcon({ type = 'freeze', used, size = 'sm', showLabel = true }) {
+  if (type !== 'freeze') return null;
+
+  const card = {
+    icon: '❄',
+    label: 'Freeze Card',
+    color: '#60a5fa',
+    desc: 'Silences a rival House until another House bids (Quick Draw)',
   };
-  const card = cards[type];
-  if (!card) return null;
 
   const sizes = {
     xs: { icon: 13, label: 10, pad: '3px 8px' },
@@ -31,16 +23,16 @@ export default function PowerCardIcon({ type, used, size = 'sm', showLabel = tru
 
   return (
     <div
-      title={used ? `${card.label} Card — USED` : `${card.label} Card: ${card.desc}`}
+      title={used ? `${card.label} — USED` : `${card.label}: ${card.desc}`}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: 5,
-        background: used ? 'rgba(255,255,255,0.03)' : `${card.color}1c`,
-        border: `1px solid ${used ? 'rgba(255,255,255,0.12)' : `${card.color}88`}`,
+        background: used ? 'rgba(255,255,255,0.04)' : `${card.color}22`,
+        border: `1px solid ${used ? 'rgba(255,255,255,0.14)' : `${card.color}99`}`,
         borderRadius: 6,
         padding: s.pad,
-        opacity: used ? 0.42 : 1,
+        opacity: used ? 0.45 : 1,
         filter: used ? 'grayscale(1)' : 'none',
         transition: 'opacity 0.25s, filter 0.25s',
         userSelect: 'none',
@@ -51,10 +43,11 @@ export default function PowerCardIcon({ type, used, size = 'sm', showLabel = tru
         <span
           style={{
             fontSize: s.label,
-            color: used ? '#777' : card.color,
-            fontWeight: 700,
+            color: used ? '#888' : '#bfdbfe',
+            fontWeight: 800,
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
+            textShadow: '0 1px 4px rgba(0,0,0,0.9)',
           }}
         >
           {used ? `${card.label} · USED` : card.label}

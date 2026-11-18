@@ -203,35 +203,6 @@ export default function CaptainPortal() {
     }
   }
 
-  async function handleSlapRTM() {
-    if (!myHouse || !currentTeam) return;
-    const finalBid = Number(auction.currentBid || 0);
-    const willGoNeg = (myHouse.remainingPoints ?? pointLimit) - finalBid < 0;
-    const msg = willGoNeg
-      ? `⚡ SLAP RTM CARD to steal ${currentTeam.name} at ${finalBid.toLocaleString()} pts?\n\nNote: This will put your House purse at ${((myHouse.remainingPoints ?? 0) - finalBid).toLocaleString()} pts (permitted under the Absolute RTM rule).`
-      : `⚡ SLAP RTM CARD to match ${finalBid.toLocaleString()} pts and immediately steal ${currentTeam.name}?`;
-
-    if (!window.confirm(msg)) return;
-    setLoading(true);
-    try {
-      await api.captain.invokeRTM();
-      await refreshState();
-      setModal({
-        type: 'success',
-        title: '⚡ RTM Steal Executed!',
-        message: `${myHouse.name} matched ${finalBid.toLocaleString()} pts and drafted ${currentTeam.name}!`,
-      });
-    } catch (err) {
-      setModal({
-        type: 'error',
-        title: 'RTM Rejected',
-        message: extractErrorMessage(err),
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
-
   // ── Dedicated House Captain Login Screen ──
   if (!session.token || !session.houseId) {
     return (
@@ -621,7 +592,7 @@ export default function CaptainPortal() {
                 </div>
               )}
 
-              {/* ── Power Arsenal (Quick Draw: Freeze & RTM) ── */}
+              {/* ── Power Arsenal (Quick Draw: Freeze Card Only) ── */}
               <div
                 style={{
                   borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -632,7 +603,7 @@ export default function CaptainPortal() {
                 }}
               >
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.08em' }}>
-                  YOUR POWER ARSENAL (QUICK DRAW)
+                  ❄ FREEZE CARD (QUICK DRAW — FIRST PRESS WINS)
                 </div>
 
                 {/* Freeze Card */}
@@ -642,6 +613,7 @@ export default function CaptainPortal() {
                     onChange={(e) => setFreezeTargetId(e.target.value)}
                     disabled={
                       Boolean(myHouse.powerCards?.freeze?.used) ||
+                      isFrozen ||
                       auction.isBlindBidRound ||
                       auction.isBlindBidActive ||
                       Boolean(auction.frozenHouseId)
@@ -650,9 +622,13 @@ export default function CaptainPortal() {
                     <option value="">
                       {myHouse.powerCards?.freeze?.used
                         ? '❄ Freeze Card — ALREADY USED'
-                        : auction.isBlindBidRound
-                          ? '❄ Freeze Card — Disabled on Blind-Bid Round'
-                          : '— Select Rival House to Freeze —'}
+                        : isFrozen
+                          ? '❄ Cannot use Freeze Card while Frozen'
+                          : auction.frozenHouseId
+                            ? '❄ Quick Draw Locked — Another freeze is active'
+                            : auction.isBlindBidRound
+                              ? '❄ Freeze Card — Disabled on Blind-Bid Round'
+                              : '— Select Rival House to Freeze —'}
                     </option>
                     {houses
                       .filter((h) => h.id !== myHouse.id)
@@ -666,6 +642,7 @@ export default function CaptainPortal() {
                     type="submit"
                     disabled={
                       Boolean(myHouse.powerCards?.freeze?.used) ||
+                      isFrozen ||
                       auction.isBlindBidRound ||
                       auction.isBlindBidActive ||
                       Boolean(auction.frozenHouseId) ||
@@ -680,6 +657,8 @@ export default function CaptainPortal() {
                       fontWeight: 700,
                       opacity:
                         myHouse.powerCards?.freeze?.used ||
+                        isFrozen ||
+                        Boolean(auction.frozenHouseId) ||
                         auction.isBlindBidRound ||
                         auction.isBlindBidActive ||
                         !freezeTargetId
@@ -690,44 +669,6 @@ export default function CaptainPortal() {
                     ❄ Slap Freeze
                   </button>
                 </form>
-
-                {/* RTM Card */}
-                <button
-                  type="button"
-                  onClick={handleSlapRTM}
-                  disabled={
-                    Boolean(myHouse.powerCards?.rtm?.used) ||
-                    isLeading ||
-                    isBatchQuotaFull ||
-                    isOverallQuotaFull ||
-                    auction.currentBid < basePrice ||
-                    auction.isBlindBidActive ||
-                    loading
-                  }
-                  style={{
-                    width: '100%',
-                    background: myHouse.powerCards?.rtm?.used
-                      ? 'rgba(255,255,255,0.03)'
-                      : 'linear-gradient(135deg, rgba(244,214,109,0.22), rgba(215,162,54,0.15))',
-                    borderColor: myHouse.powerCards?.rtm?.used
-                      ? 'rgba(255,255,255,0.1)'
-                      : 'rgba(244,214,109,0.55)',
-                    color: myHouse.powerCards?.rtm?.used ? 'var(--muted)' : 'var(--gold)',
-                    fontWeight: 800,
-                    opacity:
-                      myHouse.powerCards?.rtm?.used ||
-                      isLeading ||
-                      isBatchQuotaFull ||
-                      auction.currentBid < basePrice ||
-                      auction.isBlindBidActive
-                        ? 0.4
-                        : 1,
-                  }}
-                >
-                  {myHouse.powerCards?.rtm?.used
-                    ? '⚡ RTM Card — ALREADY USED'
-                    : `⚡ Slap RTM (Right to Match @ ${Number(auction.currentBid || 0).toLocaleString()} pts)`}
-                </button>
               </div>
             </div>
           ) : (
@@ -739,8 +680,8 @@ export default function CaptainPortal() {
 
         {/* ── 2. Live Reserve Law Formula & Next-Team Max Bid Calculator ── */}
         <section className="admin-card" style={{ position: 'relative', overflow: 'hidden' }}>
-          <HouseFlagBackground house={myHouse} opacity={0.18} variant="portal" />
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <HouseFlagBackground house={myHouse} opacity={0.07} variant="portal" />
+          <div style={{ position: 'relative', zIndex: 2, textShadow: '0 2px 6px rgba(0,0,0,0.95)' }}>
             <h2>Reserve Law &amp; Next-Team Limit Calculator</h2>
 
           {/* Live Formula Box */}
@@ -905,11 +846,6 @@ export default function CaptainPortal() {
               used={Boolean(myHouse.powerCards?.freeze?.used)}
               size="sm"
             />
-            <PowerCardIcon
-              type="rtm"
-              used={Boolean(myHouse.powerCards?.rtm?.used)}
-              size="sm"
-            />
           </div>
 
           {/* Drafted Roster */}
@@ -928,7 +864,6 @@ export default function CaptainPortal() {
                     </strong>
                     <span style={{ color: 'var(--gold)' }}>
                       {Number(tx.amount).toLocaleString()} pts
-                      {tx.viaRTM ? ' · RTM' : ''}
                       {tx.viaBlindBid ? ' · BLIND' : ''}
                     </span>
                   </div>

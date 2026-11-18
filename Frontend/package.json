@@ -5,7 +5,7 @@
   "description": "The Grand Auction 2026 - Live Projector Dashboard & Host Panel",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/postbuild.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

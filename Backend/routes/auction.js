@@ -845,9 +845,11 @@ router.post('/auction/undo-last-bid', ensureAdmin, (req, res) => {
   });
 });
 
-// ── Power Arsenal: Freeze Card & RTM (Quick Draw Atomic) ───────────
+// ── Power Arsenal: Freeze Card Only (Quick Draw First-Press Atomic Lock) ──
 
 router.post('/auction/freeze', ensureAdminOrCaptain, (req, res) => {
+  const pressTimestampMs = Date.now();
+  const pressIso = new Date(pressTimestampMs).toISOString();
   const state = getState();
   const currentTeam = state.teams.find((t) => t.id === state.auction.currentTeamId);
   if (!currentTeam) {
@@ -877,33 +879,61 @@ router.post('/auction/freeze', ensureAdminOrCaptain, (req, res) => {
   if (sourceHouse.id === targetHouse.id) {
     return res.status(400).json({ error: 'A House cannot use a Freeze Card on itself.' });
   }
-  if (sourceHouse.powerCards?.freeze?.used) {
-    return res.status(400).json({ error: `${sourceHouse.name} has already used its Freeze Card.` });
-  }
-  if (state.auction.frozenHouseId) {
-    const alreadyFrozen = state.houses.find((h) => h.id === state.auction.frozenHouseId);
+
+  // Quick Draw Priority Check 1: If this house was JUST frozen by a rival house milliseconds earlier,
+  // they lost the Quick Draw and cannot use their Freeze Card while frozen!
+  if (state.auction.frozenHouseId === sourceHouse.id) {
+    const freezer = state.houses.find((h) => h.id === state.auction.frozenByHouseId);
+    const diffMs = state.auction.freezeActivatedAtMs
+      ? Math.max(1, pressTimestampMs - state.auction.freezeActivatedAtMs)
+      : null;
     return res.status(400).json({
-      error: `Quick Draw: ${alreadyFrozen ? alreadyFrozen.name : 'A house'} is already frozen on the floor!`,
+      error: `⚡ Quick Draw Lost! ${freezer ? freezer.name : 'Another house'} pressed Freeze first${
+        diffMs ? ` (${diffMs}ms earlier)` : ''
+      } and froze ${sourceHouse.name}!`,
+      code: 'QUICK_DRAW_LOST',
     });
   }
 
-  // Permanently consume Freeze Card & silence target house until a 3rd house bids
+  // Quick Draw Priority Check 2: If another freeze is already active on the floor, first press wins!
+  if (state.auction.frozenHouseId) {
+    const alreadyFrozen = state.houses.find((h) => h.id === state.auction.frozenHouseId);
+    const freezer = state.houses.find((h) => h.id === state.auction.frozenByHouseId);
+    const diffMs = state.auction.freezeActivatedAtMs
+      ? Math.max(1, pressTimestampMs - state.auction.freezeActivatedAtMs)
+      : null;
+    return res.status(400).json({
+      error: `⚡ Quick Draw Lost! ${freezer ? freezer.name : 'A house'} pressed Freeze first${
+        diffMs ? ` (${diffMs}ms earlier)` : ''
+      } — ${alreadyFrozen ? alreadyFrozen.name : 'a house'} is already frozen on the floor!`,
+      code: 'QUICK_DRAW_LOST',
+    });
+  }
+
+  if (sourceHouse.powerCards?.freeze?.used) {
+    return res.status(400).json({ error: `${sourceHouse.name} has already used its Freeze Card.` });
+  }
+
+  // First house to press Freeze claims the atomic lock & permanently consumes their Freeze Card
   sourceHouse.powerCards.freeze = {
     used: true,
     usedOnHouseId: targetHouse.id,
     usedOnTeamId: currentTeam.id,
-    usedAt: new Date().toISOString(),
+    usedAt: pressIso,
   };
   state.auction.frozenHouseId = targetHouse.id;
   state.auction.frozenByHouseId = sourceHouse.id;
+  state.auction.freezeActivatedAtMs = pressTimestampMs;
+  state.auction.freezeActivatedAt = pressIso;
 
   addHistory(
     'freeze_played',
-    `❄ FREEZE CARD: ${sourceHouse.name} froze ${targetHouse.name} on ${currentTeam.name}! (${targetHouse.name} is silenced until another house bids)`,
+    `❄ QUICK DRAW FREEZE: ${sourceHouse.name} pressed Freeze first and silenced ${targetHouse.name} on ${currentTeam.name}! (${targetHouse.name} is blocked until a 3rd house bids)`,
     {
       sourceHouseId: sourceHouse.id,
       targetHouseId: targetHouse.id,
       teamId: currentTeam.id,
+      activatedAtMs: pressTimestampMs,
     }
   );
 
@@ -916,104 +946,14 @@ router.post('/auction/freeze', ensureAdminOrCaptain, (req, res) => {
     targetHouseName: targetHouse.name,
     teamId: currentTeam.id,
     teamName: currentTeam.name,
+    activatedAt: pressIso,
   });
 
   return res.json({
     success: true,
     sourceHouseId: sourceHouse.id,
     targetHouseId: targetHouse.id,
-  });
-});
-
-router.post('/auction/rtm', ensureAdminOrCaptain, (req, res) => {
-  const state = getState();
-  const currentTeam = state.teams.find((t) => t.id === state.auction.currentTeamId);
-  if (!currentTeam) {
-    return res.status(400).json({ error: 'No team is currently on stage.' });
-  }
-
-  if (state.auction.isBlindBidActive) {
-    return res.status(400).json({ error: 'RTM cannot be played during an active Blind Bid protocol.' });
-  }
-
-  const finalBid = Number(state.auction.currentBid || 0);
-  const basePrice = getBasePrice(state);
-  if (finalBid < basePrice || !state.auction.selectedHouseId) {
-    return res.status(400).json({
-      error: 'An active highest bid must exist on the floor before invoking Right to Match (RTM).',
-    });
-  }
-
-  const rtmHouseId =
-    req.actorRole === 'captain'
-      ? req.captainHouseId
-      : String(req.body?.houseId || '').trim();
-  const rtmHouse = state.houses.find((h) => h.id === rtmHouseId);
-
-  if (!rtmHouse) {
-    return res.status(404).json({ error: 'House invoking RTM not found.' });
-  }
-  if (rtmHouse.powerCards?.rtm?.used) {
-    return res.status(400).json({ error: `${rtmHouse.name} has already used its RTM Card.` });
-  }
-  if (rtmHouse.id === state.auction.selectedHouseId) {
-    return res.status(400).json({
-      error: `${rtmHouse.name} already holds the highest bid and cannot use RTM on its own bid.`,
-    });
-  }
-
-  // Enforce mandatory batch quota & overall 11-team quota parity
-  const batch = state.batches.find((b) => b.id === currentTeam.batchId);
-  const metrics = getHouseMetrics(state, rtmHouse.id);
-  if (metrics.remainingOverallSlots <= 0) {
-    return res.status(400).json({
-      error: `${rtmHouse.name} has already drafted all ${metrics.totalQuota} teams.`,
-    });
-  }
-  const currentBatchCount = metrics.slots[currentTeam.batchId] || 0;
-  const batchQuota = Number(batch?.quota || 0);
-  if (batch && currentBatchCount >= batchQuota) {
-    return res.status(400).json({
-      error: `${rtmHouse.name} has already filled its ${batch.name} quota (${currentBatchCount}/${batchQuota}) and cannot RTM this team.`,
-    });
-  }
-
-  // Rule: "The RTM is absolute. If a house uses RTM, they will be awarded the team at the highest
-  // bid price, even if that final amount exceeds their remaining points or puts them in negative balance."
-  const previousLeader = state.houses.find((h) => h.id === state.auction.selectedHouseId);
-  rtmHouse.powerCards.rtm = {
-    used: true,
-    usedOnTeamId: currentTeam.id,
-    amount: finalBid,
-    usedAt: new Date().toISOString(),
-  };
-
-  addHistory(
-    'rtm_played',
-    `⚡ RTM ACTIVATED: ${rtmHouse.name} matched ${
-      previousLeader ? previousLeader.name + "'s" : 'the'
-    } bid of ${finalBid.toLocaleString()} pts to steal ${currentTeam.name}!`,
-    {
-      houseId: rtmHouse.id,
-      previousLeaderId: previousLeader?.id,
-      teamId: currentTeam.id,
-      amount: finalBid,
-    }
-  );
-
-  const transaction = executeSoldTransaction(req, state, {
-    team: currentTeam,
-    house: rtmHouse,
-    amount: finalBid,
-    viaRTM: true,
-  });
-
-  return res.json({
-    success: true,
-    transaction,
-    team: currentTeam,
-    house: rtmHouse,
-    amount: finalBid,
+    activatedAt: pressIso,
   });
 });
 
@@ -1401,9 +1341,9 @@ router.post('/admin/houses/:id/power-card', ensureAdmin, (req, res) => {
     return res.status(404).json({ error: 'House not found.' });
   }
 
-  const cardType = String(req.body?.cardType || '').trim(); // 'freeze' | 'rtm'
-  if (cardType !== 'freeze' && cardType !== 'rtm') {
-    return res.status(400).json({ error: 'Invalid cardType. Use "freeze" or "rtm".' });
+  const cardType = String(req.body?.cardType || 'freeze').trim();
+  if (cardType !== 'freeze') {
+    return res.status(400).json({ error: 'Invalid cardType. Only "freeze" card is enabled.' });
   }
 
   if (!house.powerCards) {

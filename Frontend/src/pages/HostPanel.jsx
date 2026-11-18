@@ -245,7 +245,7 @@ export default function HostPanel() {
     await runAction(() => api.admin.confirmAuction(winningHouseId, amount));
   }
 
-  // ── Freeze & RTM Handlers ────────────────────────────────────────
+  // ── Freeze Card Handler ──────────────────────────────────────────
 
   async function handleInvokeFreeze(e) {
     e.preventDefault();
@@ -271,19 +271,6 @@ export default function HostPanel() {
         });
       }
     );
-  }
-
-  async function handleInvokeRTM(houseId) {
-    const house = houses.find((h) => h.id === houseId);
-    if (!house || !currentTeam) return;
-    const finalBid = Number(auction.currentBid || 0);
-    const willGoNegative = (house.remainingPoints ?? pointLimit) - finalBid < 0;
-    const confirmMsg = willGoNegative
-      ? `⚡ Invoke Absolute RTM for ${house.name} at ${finalBid.toLocaleString()} pts?\n\nNOTE: This exceeds ${house.name}'s remaining purse (${Number(house.remainingPoints).toLocaleString()} pts) and will put them in a NEGATIVE balance (${((house.remainingPoints ?? 0) - finalBid).toLocaleString()} pts), which is permitted by the Absolute RTM rule.`
-      : `⚡ Invoke Right to Match (RTM) for ${house.name} to steal ${currentTeam.name} at ${finalBid.toLocaleString()} pts?`;
-
-    if (!window.confirm(confirmMsg)) return;
-    await runAction(() => api.admin.invokeRTM(houseId));
   }
 
   // ── Blind Bid Handlers ───────────────────────────────────────────
@@ -917,6 +904,7 @@ export default function HostPanel() {
                       disabled={
                         auction.isBlindBidRound ||
                         auction.isBlindBidActive ||
+                        Boolean(auction.frozenHouseId) ||
                         !freezeSourceId ||
                         !freezeTargetId
                       }
@@ -930,59 +918,16 @@ export default function HostPanel() {
                         opacity:
                           auction.isBlindBidRound ||
                           auction.isBlindBidActive ||
+                          Boolean(auction.frozenHouseId) ||
                           !freezeSourceId ||
                           !freezeTargetId
                             ? 0.4
                             : 1,
                       }}
                     >
-                      ❄ Activate Freeze (Until 3rd House Bids)
+                      ❄ Activate Freeze (Quick Draw · Until 3rd House Bids)
                     </button>
                   </form>
-                </div>
-
-                {/* RTM (Right to Match) Control */}
-                <div>
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '0.4rem' }}>
-                    ⚡ RIGHT TO MATCH — RTM (Absolute Steal @ Floor Bid)
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-                    {houses.map((h) => {
-                      const used = Boolean(h.powerCards?.rtm?.used);
-                      const isLeader = h.id === auction.selectedHouseId;
-                      const quotaFull =
-                        (h.slots?.[currentTeam.batchId] || 0) >= (currentBatch?.quota || 0);
-                      const disabled =
-                        used ||
-                        isLeader ||
-                        quotaFull ||
-                        auction.currentBid < basePrice ||
-                        auction.isBlindBidActive;
-                      return (
-                        <button
-                          key={h.id}
-                          type="button"
-                          disabled={disabled}
-                          onClick={() => handleInvokeRTM(h.id)}
-                          style={{
-                            padding: '0.45rem 0.5rem',
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            background: used
-                              ? 'rgba(255,255,255,0.02)'
-                              : 'rgba(244,214,109,0.14)',
-                            borderColor: used
-                              ? 'rgba(255,255,255,0.08)'
-                              : 'rgba(244,214,109,0.45)',
-                            color: used ? 'var(--muted)' : 'var(--gold)',
-                            opacity: disabled ? 0.42 : 1,
-                          }}
-                        >
-                          ⚡ {h.name} {used ? '(USED)' : isLeader ? '(LEADING)' : quotaFull ? '(FULL)' : ''}
-                        </button>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 {/* Manual Blind Bid Trigger Override */}
@@ -1189,7 +1134,7 @@ export default function HostPanel() {
                     })}
                   </div>
 
-                  {/* Power Card Status & Floor Override Toggles */}
+                  {/* Power Card Status & Floor Override Toggle (Freeze Only) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
                     <div
                       onClick={() =>
@@ -1207,25 +1152,6 @@ export default function HostPanel() {
                       <PowerCardIcon
                         type="freeze"
                         used={Boolean(house.powerCards?.freeze?.used)}
-                        size="xs"
-                      />
-                    </div>
-                    <div
-                      onClick={() =>
-                        runAction(() =>
-                          api.admin.togglePowerCard(
-                            house.id,
-                            'rtm',
-                            !house.powerCards?.rtm?.used
-                          )
-                        )
-                      }
-                      style={{ cursor: 'pointer' }}
-                      title="Click to toggle RTM Card USED / AVAILABLE"
-                    >
-                      <PowerCardIcon
-                        type="rtm"
-                        used={Boolean(house.powerCards?.rtm?.used)}
                         size="xs"
                       />
                     </div>

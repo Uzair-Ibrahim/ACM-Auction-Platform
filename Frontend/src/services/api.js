@@ -152,8 +152,6 @@ const api = {
 
     invokeFreeze: (sourceHouseId, targetHouseId) =>
       client.post('/api/auction/freeze', { sourceHouseId, targetHouseId }, withAdminHeaders()),
-    invokeRTM: (houseId) =>
-      client.post('/api/auction/rtm', { houseId }, withAdminHeaders()),
 
     triggerBlindBid: (threshold) =>
       client.post('/api/auction/trigger-blind-bid', { threshold }, withAdminHeaders()),
@@ -191,7 +189,6 @@ const api = {
       client.post('/api/auction/bid', { amount }, withCaptainHeaders()),
     invokeFreeze: (targetHouseId) =>
       client.post('/api/auction/freeze', { targetHouseId }, withCaptainHeaders()),
-    invokeRTM: () => client.post('/api/auction/rtm', {}, withCaptainHeaders()),
     submitBlindBid: (amount) =>
       client.post('/api/auction/blind-bid', { amount }, withCaptainHeaders()),
   },

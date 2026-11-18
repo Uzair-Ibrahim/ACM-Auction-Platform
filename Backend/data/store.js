@@ -90,12 +90,6 @@ function buildDefaultPowerCards() {
       usedOnTeamId: null,
       usedAt: null,
     },
-    rtm: {
-      used: false,
-      usedOnTeamId: null,
-      amount: null,
-      usedAt: null,
-    },
   };
 }
 
@@ -319,12 +313,6 @@ function normalizeState(raw) {
           usedOnHouseId: rawPower.freeze?.usedOnHouseId || null,
           usedOnTeamId: rawPower.freeze?.usedOnTeamId || null,
           usedAt: rawPower.freeze?.usedAt || null,
-        },
-        rtm: {
-          used: Boolean(rawPower.rtm?.used),
-          usedOnTeamId: rawPower.rtm?.usedOnTeamId || null,
-          amount: rawPower.rtm?.amount !== undefined ? Number(rawPower.rtm.amount) : null,
-          usedAt: rawPower.rtm?.usedAt || null,
         },
       },
     };

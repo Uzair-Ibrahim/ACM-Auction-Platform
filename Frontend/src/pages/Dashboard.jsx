@@ -322,32 +322,40 @@ export default function Dashboard() {
                 overflow: 'hidden',
               }}
             >
-              {/* House Flag Background Layer */}
-              <HouseFlagBackground house={house} opacity={0.26} variant="card" />
+              {/* House Flag Background Layer (Low opacity so foreground text pops) */}
+              <HouseFlagBackground house={house} opacity={0.08} variant="card" />
 
               {house.frozen && <FreezeOverlay frozenByHouseName={house.frozenByHouseName} />}
 
               <div
                 className="house-banner"
                 style={{
-                  borderColor: house.frozen ? 'rgba(147,197,253,0.5)' : styles.accent,
+                  position: 'relative',
+                  zIndex: 2,
+                  borderColor: house.frozen ? 'rgba(147,197,253,0.65)' : styles.accent,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.95)',
                 }}
               >
                 <span
                   className="house-crest"
-                  style={{ color: house.frozen ? '#93c5fd' : styles.accent }}
+                  style={{
+                    color: house.frozen ? '#93c5fd' : styles.accent,
+                    textShadow: `0 0 12px ${styles.accent}88, 0 2px 6px #000`,
+                  }}
                 >
                   {house.crest}
                 </span>
                 <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                  <span>{house.name}</span>
+                  <span style={{ color: '#ffffff', fontWeight: 800, letterSpacing: '0.06em' }}>
+                    {house.name}
+                  </span>
                   {house.captainTeamName && (
                     <span
                       style={{
-                        fontSize: '0.62rem',
-                        color: 'var(--muted)',
+                        fontSize: '0.64rem',
+                        color: '#e5e0d5',
                         fontFamily: 'Inter, sans-serif',
-                        fontWeight: 500,
+                        fontWeight: 600,
                       }}
                     >
                       Captain: {house.captainTeamName}
@@ -357,10 +365,14 @@ export default function Dashboard() {
                 <span
                   style={{
                     marginLeft: 'auto',
-                    fontSize: '0.68rem',
-                    color: house.frozen ? '#93c5fd' : styles.accent,
+                    fontSize: '0.72rem',
+                    color: house.frozen ? '#bfdbfe' : '#ffffff',
                     fontFamily: 'Inter, sans-serif',
-                    fontWeight: 700,
+                    fontWeight: 800,
+                    background: 'rgba(0,0,0,0.45)',
+                    padding: '0.18rem 0.45rem',
+                    borderRadius: 6,
+                    border: '1px solid rgba(255,255,255,0.16)',
                   }}
                 >
                   {house.acquiredCount || 0}/{house.totalQuota || 11}
@@ -368,16 +380,25 @@ export default function Dashboard() {
               </div>
 
               {/* Purse & Live Max Bid Limit */}
-              <div className="house-balance">
+              <div
+                className="house-balance"
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  textShadow: '0 2px 6px rgba(0,0,0,0.95)',
+                }}
+              >
                 <div className="house-balance-row">
-                  <span>Remaining Purse</span>
+                  <span style={{ color: '#e5e0d5', fontWeight: 600 }}>Remaining Purse</span>
                   <strong
                     style={{
                       color: isNegative
                         ? '#ff5e4d'
                         : house.frozen
-                          ? '#93c5fd'
-                          : styles.accent,
+                          ? '#bfdbfe'
+                          : '#ffffff',
+                      fontSize: '0.94rem',
+                      fontWeight: 800,
                     }}
                   >
                     {remaining.toLocaleString()} / {pointLimit.toLocaleString()}
@@ -400,16 +421,16 @@ export default function Dashboard() {
                   className="house-balance-row"
                   style={{
                     marginTop: '0.25rem',
-                    padding: '0.28rem 0.5rem',
+                    padding: '0.32rem 0.55rem',
                     borderRadius: 6,
-                    background: 'rgba(244,214,109,0.08)',
-                    border: '1px solid rgba(244,214,109,0.22)',
+                    background: 'rgba(0, 0, 0, 0.52)',
+                    border: '1px solid rgba(244,214,109,0.42)',
                   }}
                 >
-                  <span style={{ fontSize: '0.68rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  <span style={{ fontSize: '0.68rem', color: '#f5f2ea', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Max Active Bid
                   </span>
-                  <strong style={{ fontSize: '0.82rem', color: 'var(--gold)' }}>
+                  <strong style={{ fontSize: '0.88rem', color: '#ffe27a', fontWeight: 800 }}>
                     {maxBid.toLocaleString()} pts
                   </strong>
                 </div>
@@ -418,6 +439,8 @@ export default function Dashboard() {
               {/* Slot Counters per Batch (26k: 0/4, 25k: 0/3, 24k: 0/3, 23k: 0/1) */}
               <div
                 style={{
+                  position: 'relative',
+                  zIndex: 2,
                   display: 'grid',
                   gridTemplateColumns: 'repeat(4, 1fr)',
                   gap: '0.32rem',
@@ -431,23 +454,24 @@ export default function Dashboard() {
                     <div
                       key={b.id}
                       style={{
-                        background: full ? 'rgba(78,203,128,0.13)' : 'rgba(255,255,255,0.03)',
+                        background: full ? 'rgba(20,83,45,0.65)' : 'rgba(0,0,0,0.52)',
                         border: `1px solid ${
-                          full ? 'rgba(78,203,128,0.45)' : 'rgba(255,255,255,0.1)'
+                          full ? 'rgba(78,203,128,0.65)' : 'rgba(255,255,255,0.22)'
                         }`,
                         borderRadius: 6,
-                        padding: '0.22rem 0.25rem',
+                        padding: '0.24rem 0.25rem',
                         textAlign: 'center',
+                        textShadow: '0 1px 4px rgba(0,0,0,0.95)',
                       }}
                     >
-                      <div style={{ fontSize: '0.6rem', color: 'var(--muted)', fontWeight: 600 }}>
+                      <div style={{ fontSize: '0.62rem', color: '#e5e0d5', fontWeight: 700 }}>
                         {b.code || b.name.replace(' Batch', '')}
                       </div>
                       <div
                         style={{
-                          fontSize: '0.74rem',
-                          fontWeight: 700,
-                          color: full ? 'var(--success)' : '#fff',
+                          fontSize: '0.78rem',
+                          fontWeight: 800,
+                          color: full ? '#6ee7b7' : '#ffffff',
                         }}
                       >
                         {count}/{quota}
@@ -457,65 +481,66 @@ export default function Dashboard() {
                 })}
               </div>
 
-              {/* Power Card Inventory (Icons that grey out when marked 'USED') */}
-              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {/* Power Card Inventory (Freeze Card Only) */}
+              <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                 <PowerCardIcon
                   type="freeze"
                   used={Boolean(house.powerCards?.freeze?.used)}
                   size="xs"
                 />
-                <PowerCardIcon
-                  type="rtm"
-                  used={Boolean(house.powerCards?.rtm?.used)}
-                  size="xs"
-                />
               </div>
 
               {/* Acquired Teams Roster */}
-              <div className="house-acquired-list">
+              <div
+                className="house-acquired-list"
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                  textShadow: '0 2px 6px rgba(0,0,0,0.95)',
+                }}
+              >
                 {houseTxs.length === 0 ? (
-                  <span className="empty-tag">No teams drafted yet</span>
+                  <span className="empty-tag" style={{ color: '#d6d0c4', fontWeight: 600 }}>
+                    No teams drafted yet
+                  </span>
                 ) : (
                   houseTxs.map((tx) => {
                     const team = teams.find((t) => t.id === tx.teamId);
                     if (!team) return null;
                     const batch = batches.find((b) => b.id === team.batchId);
                     return (
-                      <div key={tx.id} className="house-acquired-row">
-                        <span className="house-acquired-name">
+                      <div
+                        key={tx.id}
+                        className="house-acquired-row"
+                        style={{
+                          background: 'rgba(0, 0, 0, 0.42)',
+                          padding: '0.28rem 0.45rem',
+                          borderRadius: 6,
+                          marginBottom: '0.2rem',
+                        }}
+                      >
+                        <span className="house-acquired-name" style={{ color: '#ffffff', fontWeight: 700 }}>
                           <span
                             style={{
-                              fontSize: '0.62rem',
-                              color: 'var(--muted)',
+                              fontSize: '0.64rem',
+                              color: '#ffe27a',
                               marginRight: '0.35rem',
+                              fontWeight: 700,
                             }}
                           >
                             [{batch?.code || ''}]
                           </span>
                           {team.name}
-                          {tx.viaRTM && (
-                            <span
-                              style={{
-                                marginLeft: '0.35rem',
-                                fontSize: '0.58rem',
-                                color: 'var(--gold)',
-                                border: '1px solid rgba(244,214,109,0.4)',
-                                borderRadius: 4,
-                                padding: '0.05rem 0.3rem',
-                              }}
-                            >
-                              RTM
-                            </span>
-                          )}
                           {tx.viaBlindBid && (
                             <span
                               style={{
                                 marginLeft: '0.35rem',
                                 fontSize: '0.58rem',
                                 color: '#fca5a5',
-                                border: '1px solid rgba(231,76,60,0.4)',
+                                border: '1px solid rgba(231,76,60,0.55)',
                                 borderRadius: 4,
                                 padding: '0.05rem 0.3rem',
+                                background: 'rgba(0,0,0,0.45)',
                               }}
                             >
                               BLIND
@@ -524,7 +549,10 @@ export default function Dashboard() {
                         </span>
                         <span
                           className="house-acquired-pts"
-                          style={{ color: house.frozen ? '#93c5fd' : styles.accent }}
+                          style={{
+                            color: house.frozen ? '#bfdbfe' : '#ffe27a',
+                            fontWeight: 800,
+                          }}
                         >
                           {Number(tx.amount).toLocaleString()} pts
                         </span>
