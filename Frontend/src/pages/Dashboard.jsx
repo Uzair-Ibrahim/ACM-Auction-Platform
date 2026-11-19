@@ -114,7 +114,7 @@ export default function Dashboard() {
     ? houses.find((h) => h.id === auction.frozenByHouseId) || null
     : null;
 
-  // Track Center Stage Bidding Hero position while a team is being bid on
+  // Track Center Stage Bidding Card position (center of screen)
   useEffect(() => {
     if (currentTeam && heroRef.current) {
       const rect = heroRef.current.getBoundingClientRect();
@@ -125,13 +125,12 @@ export default function Dashboard() {
     }
   }, [currentTeam, auction.currentBid]);
 
-  // When a team is sold, calculate swap-out trajectory from Center Stage Hero to the winning House card
+  // When a team is sold, calculate swap-out trajectory from Center Stage to the winning House card
   useEffect(() => {
     if (acquisition && houseRefs.current[acquisition.houseId]) {
       const targetRect = houseRefs.current[acquisition.houseId].getBoundingClientRect();
       const startX = lastHeroCoordsRef.current?.x ?? window.innerWidth / 2;
-      const startY =
-        lastHeroCoordsRef.current?.y ?? Math.min(195, Math.max(140, window.innerHeight * 0.22));
+      const startY = lastHeroCoordsRef.current?.y ?? window.innerHeight / 2;
       setAnimCoords({
         startX,
         startY,
@@ -213,115 +212,222 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Center Stage Hero Banner (ONLY visible while a team is actively being bid on) ── */}
-      {currentTeam && (
+      {/* ── Centered Live Bidding Modal Overlay (background 4-house board stays visible behind) ── */}
+      {currentTeam && !acquisition && (
         <div
-          ref={heroRef}
-          className="auction-hero"
-          style={
-            auction.isBlindBidActive
-              ? {
-                  borderColor: 'rgba(231,76,60,0.75)',
-                  background:
-                    'linear-gradient(135deg, rgba(231,76,60,0.18) 0%, rgba(12,12,22,0.96) 60%)',
-                  boxShadow: '0 0 28px rgba(231,76,60,0.25)',
-                }
-              : {}
-          }
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 120,
+            background: 'rgba(4, 4, 12, 0.72)',
+            backdropFilter: 'blur(5px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            pointerEvents: 'none',
+            animation: 'heroAppear 0.3s ease',
+          }}
         >
-          <div className="auction-hero-top">
-            <span
-              className="auction-live-badge"
-              style={
-                auction.isBlindBidActive
-                  ? {
-                      borderRadius: 8,
-                      color: '#ff6b5b',
-                      borderColor: 'rgba(231,76,60,0.6)',
-                      background: 'rgba(231,76,60,0.14)',
-                    }
-                  : { borderRadius: 8 }
-              }
+          <div
+            ref={heroRef}
+            style={{
+              width: 'min(540px, 100%)',
+              borderRadius: 16,
+              padding: '2rem 2.1rem 1.75rem',
+              textAlign: 'center',
+              background: auction.isBlindBidActive
+                ? 'linear-gradient(160deg, rgba(36, 10, 12, 0.97) 0%, rgba(12, 6, 10, 0.98) 100%)'
+                : 'linear-gradient(160deg, rgba(16, 16, 30, 0.97) 0%, rgba(9, 9, 18, 0.98) 100%)',
+              border: auction.isBlindBidActive
+                ? '1.5px solid rgba(231, 76, 60, 0.85)'
+                : '1.5px solid rgba(244, 214, 109, 0.8)',
+              boxShadow: auction.isBlindBidActive
+                ? '0 0 46px rgba(231, 76, 60, 0.45), 0 0 90px rgba(231, 76, 60, 0.18)'
+                : '0 0 46px rgba(244, 214, 109, 0.36), 0 0 95px rgba(244, 214, 109, 0.14)',
+            }}
+          >
+            {/* Top Status Capsules */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.55rem',
+                flexWrap: 'wrap',
+              }}
             >
               <span
-                className="auction-live-dot"
-                style={auction.isBlindBidActive ? { background: '#ff6b5b' } : {}}
-              />
-              {auction.isBlindBidActive ? '🔇 Blind Bid Protocol Active' : 'Current Bidding Team'}
-            </span>
-            <span className="auction-hero-batch">{currentBatch?.name || ''}</span>
-            {auction.isBlindBidRound && (
-              <span
                 style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.28rem 0.85rem',
+                  borderRadius: 999,
+                  background: auction.isBlindBidActive
+                    ? 'linear-gradient(135deg, #e74c3c, #c0392b)'
+                    : 'linear-gradient(135deg, #27ae60, #2ecc71)',
+                  boxShadow: auction.isBlindBidActive
+                    ? '0 0 16px rgba(231, 76, 60, 0.45)'
+                    : '0 0 16px rgba(46, 204, 113, 0.45)',
+                  color: '#ffffff',
                   fontSize: '0.68rem',
-                  padding: '0.18rem 0.6rem',
-                  borderRadius: 6,
-                  background: 'rgba(231,76,60,0.14)',
-                  border: '1px solid rgba(231,76,60,0.45)',
-                  color: '#fca5a5',
-                  fontWeight: 600,
-                  letterSpacing: '0.06em',
+                  fontWeight: 800,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
                 }}
               >
-                ⚡{' '}
-                {auction.blindBidRuleLabel ||
-                  `Blind Bid @ ${Number(auction.blindBidThreshold || 15000).toLocaleString()} pts`}{' '}
-                · No Freeze Card
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: '#ffffff',
+                  }}
+                />
+                {auction.isBlindBidActive ? 'BLIND BID PROTOCOL' : 'LIVE AUCTION'}
               </span>
-            )}
-          </div>
 
-          <h2 className="auction-hero-name">{currentTeam.name}</h2>
-
-          <div className="auction-hero-stats">
-            <div className="auction-hero-stat">
-              <span>{auction.isBlindBidActive ? 'Trigger Reached' : 'Current Highest Bid'}</span>
-              <strong style={auction.isBlindBidActive ? { color: '#ff6b5b' } : {}}>
-                {auction.currentBid > 0
-                  ? `${Number(auction.currentBid).toLocaleString()} pts`
-                  : `Base: ${Number(settings?.basePrice || 5000).toLocaleString()} pts`}
-              </strong>
+              {currentBatch && (
+                <span
+                  style={{
+                    padding: '0.28rem 0.8rem',
+                    borderRadius: 999,
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.14)',
+                    color: '#d6d0c4',
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                  }}
+                >
+                  {currentBatch.name}
+                </span>
+              )}
             </div>
 
-            {activeHouse && !auction.isBlindBidActive && (
-              <div
-                className="auction-hero-stat auction-hero-house-stat"
-                style={{ '--hc': houseStyles[activeHouse.id]?.accent || '#f4d66d' }}
-              >
-                <span>Leading House</span>
-                <strong>{activeHouse.name}</strong>
-              </div>
-            )}
+            {/* Active Team Name */}
+            <h2
+              style={{
+                margin: '0.9rem 0 1rem',
+                fontFamily: 'Cinzel, serif',
+                fontWeight: 800,
+                fontSize: 'clamp(1.65rem, 3.2vw, 2.55rem)',
+                letterSpacing: '0.05em',
+                color: '#ffffff',
+                textShadow: '0 0 18px rgba(255, 255, 255, 0.22)',
+                lineHeight: 1.12,
+              }}
+            >
+              {currentTeam.name}
+            </h2>
 
-            {auction.isBlindBidActive && (
+            {/* Recessed Highest Bid Box */}
+            <div
+              style={{
+                borderRadius: 12,
+                background: 'rgba(4, 4, 10, 0.65)',
+                border: auction.isBlindBidActive
+                  ? '1px solid rgba(231, 76, 60, 0.35)'
+                  : '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '0.95rem 1.25rem',
+                marginBottom: '0.9rem',
+              }}
+            >
               <div
-                className="auction-hero-stat"
-                style={{ borderColor: 'rgba(231,76,60,0.5)' }}
+                style={{
+                  fontSize: '0.64rem',
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  color: '#9a9185',
+                  marginBottom: '0.3rem',
+                  fontWeight: 600,
+                }}
               >
-                <span>
-                  Sealed Bids Locked (&gt; {Number(auction.blindBidThreshold || 15000).toLocaleString()} pts)
+                {auction.isBlindBidActive ? 'BLIND BID TRIGGER REACHED' : 'CURRENT HIGHEST BID'}
+              </div>
+              <div
+                style={{
+                  fontFamily: 'Cinzel, serif',
+                  fontSize: 'clamp(2rem, 4vw, 3rem)',
+                  fontWeight: 800,
+                  color: auction.isBlindBidActive ? '#ff6b5b' : 'var(--gold)',
+                  textShadow: auction.isBlindBidActive
+                    ? '0 0 22px rgba(231, 76, 60, 0.5)'
+                    : '0 0 22px rgba(244, 214, 109, 0.45)',
+                  lineHeight: 1,
+                }}
+              >
+                {Number(auction.currentBid || 0).toLocaleString()}
+                <span
+                  style={{
+                    fontSize: '0.38em',
+                    color: '#c4bfb6',
+                    marginLeft: '0.45rem',
+                    letterSpacing: '0.14em',
+                    fontWeight: 600,
+                  }}
+                >
+                  PTS
                 </span>
-                <strong style={{ color: '#f4d66d', fontSize: '0.9rem' }}>
+              </div>
+            </div>
+
+            {/* Leading House / Opening Paddle / Blind Bids Status */}
+            {auction.isBlindBidActive ? (
+              <div style={{ fontSize: '0.82rem', color: '#fca5a5', fontWeight: 600 }}>
+                Sealed Bids Locked (&gt; {Number(auction.blindBidThreshold || 15000).toLocaleString()} pts):{' '}
+                <strong style={{ color: '#f4d66d' }}>
                   {houses
                     .filter((h) => auction.blindBids?.[h.id]?.submitted)
                     .map((h) => h.name)
                     .join(' · ') || 'Awaiting sealed bids…'}
                 </strong>
               </div>
+            ) : activeHouse && auction.currentBid > 0 ? (
+              <div style={{ fontSize: '0.86rem', color: '#e5e0d5' }}>
+                Leading House:{' '}
+                <strong
+                  style={{
+                    color: houseStyles[activeHouse.id]?.accent || '#f4d66d',
+                    fontFamily: 'Cinzel, serif',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {activeHouse.name}
+                </strong>
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.8rem', color: '#9a9185' }}>
+                Waiting for opening paddle (Base: {Number(settings?.basePrice || 5000).toLocaleString()} pts)...
+              </div>
+            )}
+
+            {auction.isBlindBidRound && !auction.isBlindBidActive && (
+              <div
+                style={{
+                  marginTop: '0.55rem',
+                  fontSize: '0.7rem',
+                  color: '#fca5a5',
+                  letterSpacing: '0.06em',
+                }}
+              >
+                ⚡{' '}
+                {auction.blindBidRuleLabel ||
+                  `Blind Bid @ ${Number(auction.blindBidThreshold || 15000).toLocaleString()} pts`}{' '}
+                · Freeze Card Disabled
+              </div>
             )}
 
             {frozenHouse && (
               <div
-                className="auction-hero-stat"
                 style={{
-                  borderColor: 'rgba(96,165,250,0.55)',
-                  background: 'rgba(30,58,138,0.22)',
+                  marginTop: '0.55rem',
+                  fontSize: '0.74rem',
+                  color: '#93c5fd',
+                  fontWeight: 600,
                 }}
               >
-                <span style={{ color: '#93c5fd' }}>❄ Active Stage Freeze</span>
-                <strong style={{ color: '#bfdbfe', fontSize: '0.92rem' }}>
-                  {frozenHouse.name} (by {frozenByHouse?.name || 'Rival'})
-                </strong>
+                ❄ Active Freeze: {frozenHouse.name} (by {frozenByHouse?.name || 'Rival'})
               </div>
             )}
           </div>
